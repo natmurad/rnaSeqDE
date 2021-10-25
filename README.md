@@ -4,13 +4,13 @@
 
 **Steps**:
 
-1 - Quality report with *fasqtc* and *multiqc*
+1 - Quality control with *trimmomatic*
 
-2 - Quality control with *trimmomatic*
+2 - Quality report with *fasqtc* and *multiqc*
 
 3 - Mapping to reference with *Star*
 
-4 - Getting expression counts with *htseq*
+4 - Getting expression counts with *RSEM*
 
 ```snakemake -s seqSE -c 50 --use-conda```
 
