@@ -8,9 +8,9 @@
 
 2 - Quality report with *fasqtc* and *multiqc*
 
-3 - Mapping to reference with *Star*
+3 - Align to reference with *STAR*
 
-4 - Getting expression counts with *RSEM*
+4 - Getting expression counts & TPM with *RSEM*
 
 ```snakemake -s seqSE -c 50 --use-conda```
 
@@ -29,3 +29,5 @@
  - Create environment from file *(in the container)*:
  
 ```conda env create -f environment.yaml```
+
+## Differential Expressed Genes with DESeq2
