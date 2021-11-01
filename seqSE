@@ -165,20 +165,20 @@ rule map:
   """
 
 #rule star_se:
- #   input:
-  #      fq1 = TRIMMEDDIR + "{sample}_L005_R1_001_trimmed.fastq.gz"
-   # output:
-        # see STAR manual for additional output files
-    #    align = OUT_STEP2 + "/{sample}Aligned.sortedByCoord.out.bam",
-     #   talign = OUT_STEP2 + "/{sample}Aligned.toTranscriptome.out.bam"
-    #params:
-        # path to STAR reference genome index
-     #   index=STARINDEXDIR,
-        # optional parameters
-      #  extra=""
-   # threads: 8
-   # wrapper:
-    #    "0.79.0/bio/star/align"
+#    input:
+#        fq1 = TRIMMEDDIR + "{sample}_L005_R1_001_trimmed.fastq.gz"
+#    output:
+#        # see STAR manual for additional output files
+#        align = OUT_STEP2 + "/{sample}Aligned.sortedByCoord.out.bam",
+#        talign = OUT_STEP2 + "/{sample}Aligned.toTranscriptome.out.bam"
+#    params:
+#        # path to STAR reference genome index
+#        index=STARINDEXDIR,
+#        # optional parameters
+#        extra=""
+#    threads: 8
+#    wrapper:
+#        "0.79.0/bio/star/align"
 
 #####        RULE 7      #####
 #####  PREPARE REFERENCE #####
@@ -218,7 +218,7 @@ rule calculate_exp:
         rsem-calculate-expression --star --num-threads {params.t} --alignments --estimate-rspd --no-bam-output {input.bam} {input.rsemRef}/{params.pref} {params.outPref}
     """
 
-####        RULE 8         #### 
+####        RULE 9         #### 
 #### OPTION FEATURE COUNTS ####
 
 rule featurecount:
