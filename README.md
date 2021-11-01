@@ -10,7 +10,7 @@
 
 3 - Align to reference with *STAR*
 
-4 - Getting expression counts & TPM with *RSEM*
+4 - Getting expression counts & TPM with *RSEM* (option: *featureCounts*)
 
 ```snakemake -s seqSE -c 50 --use-conda```
 
