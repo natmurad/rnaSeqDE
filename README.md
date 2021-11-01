@@ -31,3 +31,5 @@
 ```conda env create -f environment.yaml```
 
 ## Differential Expressed Genes with DESeq2
+
+ - seqSE.R - R code to perform DE analysis
