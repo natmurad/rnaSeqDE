@@ -211,7 +211,7 @@ rule calculate_exp:
     params:
         t = THREADS,
         pref = PREF,
-        outPref =  OUT_STEP2 + "/{sample}"
+        outPref =  OUT_STEP3 + "/{sample}"
     output:
         align =  OUT_STEP3 + "/{sample}.genes.results"
     shell:"""
