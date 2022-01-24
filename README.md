@@ -45,5 +45,6 @@
 
 ## References and Useful Links
 
+[NASA Gene Lab script](https://github.com/nasa/GeneLab_Data_Processing/tree/master/RNAseq/GLDS_Processing_Scripts/GLDS-168/04-05-DESeq2_NormCounts_DGE)
 
 
