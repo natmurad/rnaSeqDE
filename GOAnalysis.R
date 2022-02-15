@@ -48,7 +48,7 @@ resultsNames(ddsfiltered)
 
 res <- results(ddsfiltered, contrast = c("condition", "1", "2"))
 res <- lfcShrink(dds_1,
-                 contrast = c("condition", "no", "BHB"),
+                 contrast = c("condition", "1", "2"),
                  res=res, type = 'ashr')
 
 res$SYMBOL = mapIds(org.Hs.eg.db,
@@ -69,7 +69,7 @@ EnhancedVolcano(res,
                 x = 'log2FoldChange',
                 y = 'pvalue',
                 xlim = c(-7,7),
-                title = "Neurons - no LPS vs LPS",
+                title = "Title - 1 vs 2",
                 subtitle = "LogFC vs -Log10Pvalue"
 )
 
