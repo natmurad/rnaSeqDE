@@ -32,16 +32,21 @@
 
 **Run pipeline:**
 
-```snakemake -s seqSE -c 50 --use-conda```
+```snakemake -s seqSE -c 50```
 
 ## Differential Expressed Genes with DESeq2
 
- - seqSE.R - R code to perform DE analysis using *DEseq2*, map ID and Gene information from Ensembl. Exploratory analysis of samples with heatmap, PCA Analysis, hierarchical clustering, MA plot and Volcano plot of DE genes. Creating tables with different filters, comparisons, UP and DOWN regulated genes.
+ - seqSE.R - R code to perform DE analysis using *DEseq2*, map ID and Gene information from Ensembl. Exploratory analysis of samples with heatmap, PCA Analysis, hierarchical clustering, MA plot and Volcano plot of DE genes.
+ 
+ - nasaCode.R - [NASA Gene Lab code](https://github.com/nasa/GeneLab_Data_Processing/tree/master/RNAseq/GLDS_Processing_Scripts/GLDS-168/04-05-DESeq2_NormCounts_DGE) that I like to use.
 
-## GO Enrichment Analysis
+## GO Analysis
 
+ - GSEA.R - GO analysis using *clusterprofiler* & *enrichplot*
 
-## Hallmarks
+## Pathways
+
+- fgsea.R - enriched pathways using *fgsea*
 
 ## References and Useful Links
 
