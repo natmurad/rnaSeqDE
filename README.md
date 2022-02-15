@@ -42,7 +42,7 @@
 
 ## GO Analysis
 
- - GSEA.R - GO analysis using *clusterprofiler* & *enrichplot*
+ - GOanalysis.R - GO analysis using *clusterprofiler* & *enrichplot*
 
 ## Pathways
 
