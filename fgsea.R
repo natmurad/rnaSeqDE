@@ -64,7 +64,7 @@ res3 <- merge(res, bm, by.x="row", by.y="ensembl_gene_id")
 ranks <- res3$stat
 names(ranks) <- res3$hsapiens_homolog_associated_gene_name
 ranks <- na.omit(ranks)
-pathways.hallmark <- gmtPathways("/media/natalia/BACKUP/Mitsu/mitsuNewData/aln/counts/h.all.v7.4.symbols.gmt")
+pathways.hallmark <- gmtPathways("/aln/counts/h.all.v7.4.symbols.gmt")
 
 ######################
 
