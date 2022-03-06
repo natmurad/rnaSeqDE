@@ -2,8 +2,6 @@
 
 ## Docker Environment
 
-**Environment**
-
  - Download [Snakemake Docker Image](https://hub.docker.com/r/snakemake/snakemake)
 
  - Start container
@@ -18,6 +16,8 @@
  
 ```conda env create -f environment.yaml```
 
+- multiqc must be installed manually because it has conflicts with new python versions.
+
 ## seqSE workflow
 
 **Steps**:
@@ -30,7 +30,13 @@
 
 4 - Getting expression counts & TPM with *RSEM* (option: *featureCounts*)
 
-**Run pipeline:**
+## Prepare code before running:
+
+### Change in the file *"seqSE"* the path to the *config.yaml* file.
+
+### In *config.yaml* file change the paths for all folder.
+
+## Run pipeline:
 
 ```snakemake -s seqSE -c 50```
 
