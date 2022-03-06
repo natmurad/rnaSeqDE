@@ -1,0 +1,234 @@
+#####CONFIG FILE#####
+configfile: "/home/seqSEpipeline/config.yaml"
+
+#####LIBRARIES#####
+import io 
+import os
+import pandas as pd
+import pathlib
+from snakemake.exceptions import print_exception, WorkflowError
+
+#####SET VARIABLES#####
+THREADS = 50
+
+STEP_QC = config["step_qC"] # quality control
+STEP_MAP = config["step_map"] # indexing and mapping
+STEP_COUNTS = config["step_counts"] # quantify counts
+
+SAMPLES = config["samples"].split() # sample files
+LANE = config["lane"]
+
+ADAPTERS = config["adapters"] # adapters sequences
+REF_GENOME = config["ref_genome"]
+GTF_FILE = config["gtf_file"]
+PREF = config["prefix_ref"]
+
+INPUTDIR = config["raw_data_dir"] #  /home/dataset/raw_data - fastq reads
+DIR = config["base_dir"] # /home/user/
+TRIMMEDDIR =  config['trimmed_dir'] # os.path.join(DIR, "/trimmed/")
+STARINDEXDIR = config['genomeindexdir']
+RSEMPREPREF = config['rsemprepref']
+
+OUT_STEP_QC = os.path.join(DIR, STEP_QC) # /home/dataset/qC
+OUT_STEP_MAP = os.path.join(DIR, STEP_MAP) # /home/dataset/map
+OUT_STEP_COUNTS = os.path.join(DIR, STEP_COUNTS) # /home/dataset/counts
+
+######DEFINE STEPS######
+rule all:
+    input:
+#     fastqc output before trimming
+        fastq_html = expand("{out_dir_name}/fastqcRaw/{sample}{lane}_fastqc.html", out_dir_name=OUT_STEP_QC, sample=SAMPLES, lane=LANE),
+        fastq_zip = expand("{out_dir_name}/fastqcRaw/{sample}{lane}_fastqc.zip", out_dir_name=OUT_STEP_QC, sample=SAMPLES, lane=LANE), 
+    # fastqc output after trimming
+        trimmed = expand("{trim_dir}{sample}{lane}_trimmed.fastq.gz", trim_dir = TRIMMEDDIR, sample=SAMPLES, lane=LANE), 
+        html_trim = expand("{out_dir_name}/fastqcTrim/{sample}{lane}_trimmed_fastqc.html", out_dir_name=OUT_STEP_QC, sample=SAMPLES, lane=LANE),
+        zip_trim = expand("{out_dir_name}/fastqcTrim/{sample}{lane}_trimmed_fastqc.zip", out_dir_name=OUT_STEP_QC, sample=SAMPLES, lane=LANE),
+    # merged reports before trimming
+        raw_html = OUT_STEP_QC + "/fastqcRaw/multiqc_report.html",
+ #       raw_stats = OUT_STEP_QC + "/fastqcRaw/multiqc_data/multiqc_general_stats.txt",
+    # merged reports after trimming
+        trim_html = OUT_STEP_QC + "/fastqcTrim/multiqc_report.html",
+#        trim_stats = OUT_STEP_QC + "/fastqcTrim/multiqc_data/multiqc_general_stats.txt",
+    # star align
+        reads_map = expand("{out_dir}/{sample}Aligned.sortedByCoord.out.bam", out_dir = OUT_STEP_MAP, sample=SAMPLES),
+    # rsem
+        rsemref = RSEMPREPREF + PREF + ".seq",
+        counts = expand("{out_dir}/{sample}.genes.results", out_dir = OUT_STEP_COUNTS,  sample=SAMPLES),
+    # feature counts
+     #   featurecounts = OUT_STEP_COUNTS + "/featurecounts.txt"
+
+#####       RULE 1     #####
+##### QUALITY RAW DATA #####
+rule fastqcRAW:
+    input:
+#     "/path/to/fastq.gz/sample.fastq.gz"
+       raw = INPUTDIR + "{sample}" + LANE + ".fastq.gz"
+    output:
+       html_report = OUT_STEP_QC + "/fastqcRaw/{sample}" + LANE + "_fastqc.html",
+       zip_report = OUT_STEP_QC + "/fastqcRaw/{sample}" + LANE + "_fastqc.zip"
+    params:
+       out = OUT_STEP_QC + "/fastqcRaw/"
+    shell:"""
+       fastqc {input.raw} --outdir {params.out}
+    """
+
+#####  RULE 2  #####
+##### TRIMMING #####
+rule trimSE:
+    input:
+        raw = INPUTDIR + "{sample}" + LANE + ".fastq.gz",
+        adapters = ADAPTERS
+    output:
+        trimmed = TRIMMEDDIR + "{sample}" + LANE + "_trimmed.fastq.gz"
+    params:
+        t = THREADS
+    shell:"""
+        trimmomatic SE -threads {params.t} \
+        {input.raw} \
+        {output.trimmed} \
+        ILLUMINACLIP:{input.adapters}:2:30:10 \
+        SLIDINGWINDOW:4:20 LEADING:9 TRAILING:10 MINLEN:50 AVGQUAL:20
+    """
+
+
+#####         RULE 3       #####
+##### QUALITY TRIMMED DATA #####
+rule fastqcTRIM:
+    input:
+#     "/path/to/fastq.gz/trimmed/sample.fastq.gz"
+       TRIMMEDDIR + "{sample}" + LANE + "_trimmed.fastq.gz"
+    output:
+        html_report = OUT_STEP_QC + "/fastqcTrim/{sample}" + LANE + "_trimmed_fastqc.html",
+        zip_report = OUT_STEP_QC + "/fastqcTrim/{sample}" + LANE + "_trimmed_fastqc.zip"
+    params:
+        out = OUT_STEP_QC + "/fastqcTrim/"
+    shell:"""
+        fastqc {input} --outdir {params.out}
+    """ 
+
+#####     RULE 4    #####
+#####MULTIQC TRIMMED#####        
+rule multiqc_report:
+    input:
+        raw = expand("{out_dir}/fastqcRaw/{sample}{lane}_fastqc.zip", out_dir = OUT_STEP_QC,
+                     sample=SAMPLES, lane=LANE),
+        trimmed = expand("{out_dir}/fastqcTrim/{sample}{lane}_trimmed_fastqc.zip", out_dir = OUT_STEP_QC,
+                         sample=SAMPLES, lane=LANE)
+    output:
+        raw_html   = OUT_STEP_QC + "/fastqcRaw/multiqc_report.html", 
+  #      raw_stats  = OUT_STEP_QC + "/fastqcRaw/multiqc_data/multiqc_general_stats.txt",
+        trim_html  = OUT_STEP_QC + "/fastqcTrim/multiqc_report.html" 
+   #     trim_stats = OUT_STEP_QC + "/fastqcTrim/multiqc_data/multiqc_general_stats.txt"
+    params:
+        outdirRaw = OUT_STEP_QC + "/fastqcRaw/",
+        outdirTrim = OUT_STEP_QC + "/fastqcTrim/"
+    # run to raw data
+    # run to trimmed data
+    shell:"""
+        multiqc {input.raw} --outdir {params.outdirRaw}
+        multiqc {input.trimmed} --outdir {params.outdirTrim}
+    """
+
+######################## STAR MAPPING ########################
+#####    RULE 5     #####
+##### GENOME  INDEX #####
+rule index:
+    input:
+        fa = REF_GENOME, # provide your reference FASTA file
+        gtf = GTF_FILE # provide your GTF file
+    output:
+        directory(STARINDEXDIR) # you can rename the index folder
+        # --sjdbOverhang ReadLength-1
+    params:
+        t = THREADS
+    shell:"""
+        STAR --runThreadN {params.t} --runMode genomeGenerate --genomeDir {output} --genomeFastaFiles {input.fa} --sjdbGTFfile {input.gtf} --sjdbOverhang 100
+    """
+
+##### RULE 6  #####
+##### MAPPING #####
+rule map:
+    input:
+        reads = TRIMMEDDIR + "{sample}" + LANE + "_trimmed.fastq.gz",
+        refdir = STARINDEXDIR
+    output:
+        align = OUT_STEP_MAP + "/{sample}Aligned.sortedByCoord.out.bam", # sample.aligned.sortedByCoord.out.bam
+        talign = OUT_STEP_MAP + "/{sample}Aligned.toTranscriptome.out.bam"
+    params:
+        t = THREADS,
+        outPref =  OUT_STEP_MAP + "/{sample}"
+    shell:"""
+        rm -rf {params.outPref}
+        mkdir -p {params.outPref}
+        /opt/conda/envs/snakemake/bin/STAR --genomeDir {input.refdir} --readFilesIn {input.reads} --runThreadN {params.t} --readFilesCommand zcat --outSAMtype BAM SortedByCoordinate --quantMode TranscriptomeSAM GeneCounts --outFileNamePrefix {params.outPref}
+  """
+
+#rule star_se:
+#    input:
+#        fq1 = TRIMMEDDIR + "{sample}_L005_R1_001_trimmed.fastq.gz"
+#    output:
+#        # see STAR manual for additional output files
+#        align = OUT_STEP_MAP + "/{sample}Aligned.sortedByCoord.out.bam",
+#        talign = OUT_STEP_MAP + "/{sample}Aligned.toTranscriptome.out.bam"
+#    params:
+#        # path to STAR reference genome index
+#        index=STARINDEXDIR,
+#        # optional parameters
+#        extra=""
+#    threads: 8
+#    wrapper:
+#        "0.79.0/bio/star/align"
+
+#####        RULE 7      #####
+#####  PREPARE REFERENCE #####
+
+rule prepare_ref:
+    input:
+        gtfFile = GTF_FILE,
+        refGenome = REF_GENOME
+    output:
+        RSEMPREPREF + PREF + ".seq"
+    params:
+        gtfFile = GTF_FILE,
+        rsemRef = RSEMPREPREF,
+        t = THREADS,
+        pref = PREF
+    shell:"""
+        cd {params.rsemRef}
+        rsem-prepare-reference --gtf {params.gtfFile} \
+        -p {params.t} --star --star-path /opt/conda/envs/snakemake/bin/ \
+        {input.refGenome} {params.pref}
+    """
+
+#####  RULE 8 #####
+#####  COUNTS #####
+rule calculate_exp:
+    input:
+        bam = OUT_STEP_MAP + "/{sample}Aligned.toTranscriptome.out.bam"
+    params:
+        t = THREADS,
+        rsemRef = RSEMPREPREF,
+        pref = PREF,
+        outPref =  OUT_STEP_COUNTS + "/{sample}"
+    output:
+        align =  OUT_STEP_COUNTS + "/{sample}.genes.results"
+    shell:"""
+        rsem-calculate-expression --star --num-threads {params.t} --alignments --estimate-rspd --no-bam-output {input.bam} {params.rsemRef}/{params.pref} {params.outPref}
+    """
+
+####        RULE 9         #### 
+#### OPTION FEATURE COUNTS ####
+
+#rule featurecount:
+#    input:
+#        gtf = GTF_FILE,
+ #       bams = expand("{outdir}/{sample}Aligned.toTranscriptome.out.bam", outdir = OUT_STEP_MAP,
+                   #   sample=SAMPLES)
+ #   output:
+ #       OUT_STEP_COUNTS + "/featurecounts.txt"
+ #   params:
+   #     t = 50
+  #  shell:"""
+  #      featureCounts -T {params.t} -s 2 -a {input.gtf} -o {output} {input.bams}
+   # """
+
