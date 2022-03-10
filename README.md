@@ -4,6 +4,8 @@
 
  - Download [Snakemake Docker Image](https://hub.docker.com/r/snakemake/snakemake)
 
+ ```docker pull snakemake/snakemake:stable```
+
  - Start container
 
  ```docker run --name SnakemakeV1 -it <image_id> bash```
