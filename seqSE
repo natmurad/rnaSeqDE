@@ -106,8 +106,8 @@ rule fastqcTRIM:
         fastqc {input} --outdir {params.out}
     """ 
 
-#####     RULE 4    #####
-#####MULTIQC TRIMMED#####        
+########     RULE 4    ########
+#####MULTIQC RAW & TRIMMED#####        
 rule multiqc_report:
     input:
         raw = expand("{out_dir}/fastqcRaw/{sample}{lane}_fastqc.zip", out_dir = OUT_STEP_QC,
