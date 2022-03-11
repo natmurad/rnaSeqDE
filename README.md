@@ -2,24 +2,18 @@
 
 ## Docker Environment
 
- - Download [Snakemake Docker Image](https://hub.docker.com/r/snakemake/snakemake)
+ - Download the Dockerfile and inside same directory run:
 
- ```docker pull snakemake/snakemake:stable```
+ ```docker build -t <IMAGE_TAG> .```
 
  - Start container
 
- ```docker run --name SnakemakeV1 -it <image_id> bash```
+ ```docker run --name <CONTAINER_NAME> -it <IMAGE_ID> bash```
  
  - Copy your files to container
 
-  ```docker cp <directory/files> <id_container>:<directory>```
+  ```docker cp <DIRECTORY/FILES> <CONTAINER_ID>:<DIRECTORY>```
  
- - Create environment from file *(in the container)*:
- 
-```conda env create -f environment.yaml```
-
-- multiqc must be installed manually because it has conflicts with new python versions.
-
 ## seqSE workflow
 
 **Steps**:
