@@ -18,7 +18,7 @@
 
   ```docker cp <DIRECTORY/FILES> <CONTAINER_ID>:<DIRECTORY>```
  
-## seqSE workflow
+## seqSE Workflow
 
 **Steps**:
 
@@ -30,15 +30,18 @@
 
 4 - Getting expression counts & TPM with *RSEM* (option: *featureCounts*)
 
+
 ## Prepare code before running:
 
 ### Change in the file *"seqSE"* the path to the *config.yaml* file.
 
 ### In *config.yaml* file change the paths for all folder.
 
+
 ## Run pipeline:
 
 ```snakemake -s seqSE -c 50```
+
 
 ## Differential Expressed Genes with DESeq2
 
