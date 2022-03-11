@@ -6,6 +6,10 @@
 
  ```docker build -t <IMAGE_TAG> .```
 
+ - Check the IMAGE ID (look for the name of your image tag):
+
+ ```docker images -a```
+ 
  - Start container
 
  ```docker run --name <CONTAINER_NAME> -it <IMAGE_ID> bash```
