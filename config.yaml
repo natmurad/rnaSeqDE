@@ -4,6 +4,9 @@ CONT_2_UMI_S99 CONT_4_UMI_S103 MG1_UMI_S93 MGSTIM_1_UMI_S94 MGSTIM_2_UMI_S98 MGS
 
 lane: "_L005_R1_001"
 
+# Set the number of threads
+threads: "50"
+
 ## Step names
 step_qC: qC # quality control
 step_map: map # map to reference
