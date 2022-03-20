@@ -9,7 +9,7 @@ import pathlib
 from snakemake.exceptions import print_exception, WorkflowError
 
 #####SET VARIABLES#####
-THREADS = 50
+THREADS = config["threads"]
 
 STEP_QC = config["step_qC"] # quality control
 STEP_MAP = config["step_map"] # indexing and mapping
