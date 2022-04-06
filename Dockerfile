@@ -7,7 +7,7 @@ RUN conda install -c bioconda fastqc trimmomatic star rsem
 RUN git clone https://github.com/ewels/MultiQC.git && cd MultiQC && pip install .
 
 # Download script folder from Github
-RUN gitclone https://github.com/natmurad/rnaSeqDE.git
+RUN git clone https://github.com/natmurad/rnaSeqDE.git
 
 # Download gdrive
 RUN conda install -c conda-forge gdrive
