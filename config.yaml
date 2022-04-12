@@ -13,6 +13,9 @@ step_counts: counts # counts
 # adapters
 adapters: /home/microgravity/adapters.fa
 
+# threads
+threads: 50
+
 ## Directories
 # Base data dir
 base_dir: /home/seqSEpipeline/
