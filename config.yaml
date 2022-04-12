@@ -1,0 +1,39 @@
+## Samples
+samples: "2_MG_4_UMI_S81 MG_4_UMI_S101 CONTSTIM_1_UMI_S96 MG_4_UMI_S83 CONTSTIM_2_UMI_S100 MG_STIM_1_UMI_S82 CONTSTIM_4_UMI_S104 CONT_1_UMI_S95
+CONT_2_UMI_S99 CONT_4_UMI_S103 MG1_UMI_S93 MGSTIM_1_UMI_S94 MGSTIM_2_UMI_S98 MGSTIM_4_UMI_S102 MG_2_UMI_S97"
+
+lane: "_L005_R1_001"
+
+## Step names
+step_qC: qC # quality control
+step_map: map # map to reference
+step_counts: counts # counts
+
+## Info
+# adapters
+adapters: /home/microgravity/adapters.fa
+
+## Directories
+# Base data dir
+base_dir: /home/seqSEpipeline/
+
+# Change to location of all raw .sam files
+raw_data_dir: /home/microgravity/
+
+# Path to trimmed reads output
+trimmed_dir: /home/seqSEpipeline/trimmed/
+
+# Path to reference genome
+ref_genome: /home/genome/Mus_musculus.GRCm39.dna.toplevel.fa
+
+# Path to gtf file
+gtf_file: /home/genome/Mus_musculus.GRCm39.105.gtf
+
+# Genome index dir
+genomeindexdir: /home/seqSEpipeline/starIndex/
+
+# Rsem prepare ref dir
+rsemprepref: /home/seqSEpipeline/rsemRef/
+
+# Reference prefix
+prefix_ref: "mouse_ref"
